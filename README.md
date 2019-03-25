@@ -6,4 +6,4 @@
    2. double click on ```snake.exe```
 
 ## snakeGame/Game of fifteen
-   It is available all those users who have a Love game engine install on their system
+   It is available for all those users who have a Love game engine install on their system
