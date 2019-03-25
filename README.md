@@ -1,4 +1,4 @@
-# Way by which you can run game  localy
+# Run game localy
 
 ## SnakeGameForWindows
    It is only for windows user 
