@@ -1,6 +1,7 @@
 function love.load()
-    gridXCount = 20
-    gridYCount = 15
+
+    gridXCount = 40
+    gridYCount = 27
 
     function moveFood()
         local possibleFoodPositions = {}
@@ -107,7 +108,7 @@ end
 function love.draw()
     local cellSize = 15
 
-    love.graphics.setColor(.28, .28, .28)
+    love.graphics.setColor(0.28, 0, 0, 0.28)
     love.graphics.rectangle(
         'fill',
         0,
@@ -128,14 +129,14 @@ function love.draw()
 
     for segmentIndex, segment in ipairs(snakeSegments) do
         if snakeAlive then
-            love.graphics.setColor(.6, 1, .32)
+            love.graphics.setColor(1, 1, 0)
         else
-            love.graphics.setColor(.5, .5, .5)
+            love.graphics.setColor(1, 1, 1)
         end
         drawCell(segment.x, segment.y)
     end
 
-    love.graphics.setColor(1, .3, .3)
+    love.graphics.setColor(1, 0, 1)
     drawCell(foodPosition.x, foodPosition.y)
 end
 
