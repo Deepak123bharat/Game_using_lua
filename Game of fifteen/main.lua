@@ -93,7 +93,7 @@ function love.draw()
             if grid[y][x] ~= gridXCount * gridYCount then
                 local pieceSize = 100
                 local pieceDrawSize = pieceSize - 1
-                love.graphics.setColor(.4, .1, .6)
+                love.graphics.setColor(0.5, 0.5, 1)
                 love.graphics.rectangle(
                     'fill',
                     (x - 1) * pieceSize,
