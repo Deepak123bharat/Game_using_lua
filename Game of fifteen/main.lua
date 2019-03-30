@@ -73,7 +73,7 @@ function love.load()
                     move('left')
                 end
             end
-
+            -- Making the bottom-right position empty
             for moveNumber = 1, gridXCount - 1 do
                 move('left')
             end
@@ -88,12 +88,12 @@ function love.load()
 end
 
 function love.draw()
-    for y = 1, gridYCount do
+    for y = 1, gridYCount do   
         for x = 1, gridXCount do
             if grid[y][x] ~= gridXCount * gridYCount then
                 local pieceSize = 100
                 local pieceDrawSize = pieceSize - 1
-                love.graphics.setColor(0.5, 0.5, 1)
+                love.graphics.setColor(0.5, 0.5, 1) --drawing pieces
                 love.graphics.rectangle(
                     'fill',
                     (x - 1) * pieceSize,
@@ -101,7 +101,7 @@ function love.draw()
                     pieceDrawSize,
                     pieceDrawSize
                 )
-                love.graphics.setColor(1, 1, 1)
+                love.graphics.setColor(1, 1, 1) 
                 love.graphics.print(
                     grid[y][x],
                     (x - 1) * pieceSize,
@@ -112,7 +112,7 @@ function love.draw()
     end
 end
 
-function love.keypressed(key)
+function love.keypressed(key)  --Moving pieces if any key pressed
     if key == 'down' then
         move('down')
     elseif key == 'up' then
@@ -123,7 +123,7 @@ function love.keypressed(key)
         move('left')
     end
 
-    if isComplete() then
+    if isComplete() then --Check if complete
         reset()
     end
 end
