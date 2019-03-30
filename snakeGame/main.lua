@@ -3,7 +3,7 @@ function love.load()
     gridXCount = 40
     gridYCount = 27
 
-    function moveFood()
+    function moveFood()     --moving food
         local possibleFoodPositions = {}
 
         for foodX = 1, gridXCount do
@@ -24,6 +24,8 @@ function love.load()
 
         foodPosition = possibleFoodPositions[love.math.random(1, #possibleFoodPositions)]
     end
+    
+    --Drawing the snake & Moving the snake right
 
     function reset()
         snakeSegments = {
@@ -39,12 +41,14 @@ function love.load()
 
     reset()
 end
+   
+--Timmer
 
 function love.update(dt)
     timer = timer + dt
 
     if snakeAlive then
-        local timerLimit = 0.15
+        local timerLimit = 0.15                 --The snake moves once every 0.15 seconds.
         if timer >= timerLimit then
             timer = timer - timerLimit
 
@@ -55,7 +59,7 @@ function love.update(dt)
             local nextXPosition = snakeSegments[1].x
             local nextYPosition = snakeSegments[1].y
 
-            if directionQueue[1] == 'right' then
+            if directionQueue[1] == 'right' then      --Wrapping around screen
                 nextXPosition = nextXPosition + 1
                 if nextXPosition > gridXCount then
                     nextXPosition = 1
@@ -140,7 +144,7 @@ function love.draw()
     drawCell(foodPosition.x, foodPosition.y)
 end
 
-function love.keypressed(key)
+function love.keypressed(key)                 --Preventing moving straight backwards
     if key == 'right'
     and directionQueue[#directionQueue] ~= 'right'
     and directionQueue[#directionQueue] ~= 'left' then
