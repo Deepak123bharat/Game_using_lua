@@ -1,0 +1,1 @@
+Move the pieces around until they are in sequential order by using the arrow keys
