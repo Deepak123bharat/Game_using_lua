@@ -1,49 +1,49 @@
 function love.load()
     love.graphics.setNewFont(30)
 
-    gridXCount = 4
-    gridYCount = 4
-
-    function getInitialValue(x, y)
-        return x + ((y - 1) * gridXCount)
+    gx = 4   --gx used for grid X Count
+    gy = 4   --gy used for grid Y Count
+ 
+    function gi(x, y)   --gi used to get Initial Value
+        return x + ((y - 1) * gx)
     end
 
-    function move(direction)
-        local emptyX
-        local emptyY
+    function m(d)  -- d stands for direction    &   m used for move
+        local ex   --ex used for empty X
+        local ey   --ey used for empty Y
 
-        for y = 1, gridYCount do
-            for x = 1, gridXCount do
-                if grid[y][x] == gridXCount * gridYCount then
-                    emptyX = x
-                    emptyY = y
+        for y = 1, gy do
+            for x = 1, gx do
+                if g[y][x] == gx * gy then  -- g used for grid
+                    ex = x
+                    ey = y
                 end
             end
         end
 
-        local newEmptyY = emptyY
-        local newEmptyX = emptyX
+        local ney = ey  --ney used for new Empty Y
+        local nex = ex   --nex used for new Empty x
 
-        if direction == 'down' then
-            newEmptyY = emptyY -  1
-        elseif direction == 'up' then
-            newEmptyY = emptyY +  1
-        elseif direction == 'right' then
-            newEmptyX = emptyX -  1
-        elseif direction == 'left' then
-            newEmptyX = emptyX +  1
+        if d == 'down' then
+            ney = ey -  1
+        elseif d == 'up' then
+            ney = ey +  1
+        elseif d == 'right' then
+            nex = ex -  1
+        elseif d == 'left' then
+            nex = ex +  1
         end
 
-        if grid[newEmptyY] and grid[newEmptyY][newEmptyX] then
-            grid[newEmptyY][newEmptyX], grid[emptyY][emptyX] =
-            grid[emptyY][emptyX], grid[newEmptyY][newEmptyX]
+        if g[ney] and g[ney][nex] then
+            g[ney][nex], g[ey][ex] =
+            g[ey][ex], g[ney][nex]
         end
     end
 
-    function isComplete()
-        for y = 1, gridYCount do
-            for x = 1, gridXCount do
-                if grid[y][x] ~= getInitialValue(x, y) then
+    function ic()   -- ic to check completed or not 
+        for y = 1, gy do
+            for x = 1, gx do
+                if g[y][x] ~= gi(x, y) then
                     return false
                 end
             end
@@ -52,78 +52,78 @@ function love.load()
     end
 
     function reset()
-        grid = {}
-        for y = 1, gridYCount do
-            grid[y] = {}
-            for x = 1, gridXCount do
-                grid[y][x] = getInitialValue(x, y)
+        g = {}
+        for y = 1, gy do
+            g[y] = {}
+            for x = 1, gx do
+                g[y][x] = gi(x, y)
             end
         end
 
         repeat
-            for moveNumber = 1, 1000 do
+            for mn = 1, 1000 do  --used for move Number
                 local roll = love.math.random(4)
                 if roll == 1 then
-                    move('down')
+                    m('down')
                 elseif roll == 2 then
-                    move('up')
+                    m('up')
                 elseif roll == 3 then
-                    move('right')
+                    m('right')
                 elseif roll == 4 then
-                    move('left')
+                    m('left')
                 end
             end
-            -- Making the bottom-right position empty
-            for moveNumber = 1, gridXCount - 1 do
-                move('left')
+
+            for mn = 1, gx - 1 do
+                m('left')
             end
 
-            for moveNumber = 1, gridYCount - 1 do
-                move('up')
+            for mn = 1, gy - 1 do
+                m('up')
             end
-        until not isComplete()
+        until not ic()
     end
 
     reset()
 end
 
 function love.draw()
-    for y = 1, gridYCount do   
-        for x = 1, gridXCount do
-            if grid[y][x] ~= gridXCount * gridYCount then
-                local pieceSize = 100
-                local pieceDrawSize = pieceSize - 1
-                love.graphics.setColor(0.5, 0.5, 1) --drawing pieces
+    for y = 1, gy do
+        for x = 1, gx do
+            if g[y][x] ~= gx * gy then
+                local ps = 100   -- ps used for piece Size
+                local pds = ps - 1  -- pds used for piece Draw Size
+                love.graphics.setColor(0.5, 0.5, 1)
                 love.graphics.rectangle(
                     'fill',
-                    (x - 1) * pieceSize,
-                    (y - 1) * pieceSize,
-                    pieceDrawSize,
-                    pieceDrawSize
+                    (x - 1) * ps,
+                    (y - 1) * ps,
+                    pds,
+                    pds
                 )
-                love.graphics.setColor(1, 1, 1) 
+                love.graphics.setColor(1, 1, 1)
                 love.graphics.print(
-                    grid[y][x],
-                    (x - 1) * pieceSize,
-                    (y - 1) * pieceSize
+                    g[y][x],
+                    (x - 1) * ps,
+                    (y - 1) * ps
                 )
             end
         end
     end
 end
 
-function love.keypressed(key)  --Moving pieces if any key pressed
+function love.keypressed(key)
     if key == 'down' then
-        move('down')
+        m('down')
     elseif key == 'up' then
-        move('up')
+        m('up')
     elseif key == 'right' then
-        move('right')
+        m('right')
     elseif key == 'left' then
-        move('left')
+        m('left')
     end
 
-    if isComplete() then --Check if complete
+    if ic() then
         reset()
     end
 end
