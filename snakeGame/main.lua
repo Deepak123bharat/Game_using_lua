@@ -1,15 +1,15 @@
 function love.load()
-    gX = 40            -- gX used for gridXcount
-    gY = 27    -- gY used for gridYcount 
+    gX = 40            -- gX used for grid X count
+    gY = 27    -- gY used for grid Y count 
 
-    function mf()    -- mf used for moveFood
-        local pfp = {}      --pfp used for possibleFoodPositions pfb pbf
+    function mf()    -- mf used for move Food
+        local pfp = {}      --pfp used for possible Food Positions 
 
-        for fx = 1, gX do     --fx used for foodX
-            for fy = 1, gY do --fy used for foodY
+        for fx = 1, gX do     --fx used for food X
+            for fy = 1, gY do --fy used for food Y
                 local possible = true
 
-                for si, seg in ipairs(ss) do --si used for segmentIndex, seg used for segment, ss used for snakeSegments
+                for si, seg in ipairs(ss) do --si used for segment Index, seg used for segment, ss used for snake Segments
                     if fx == seg.x and fy == seg.y then
                         possible = false
                     end
@@ -21,7 +21,7 @@ function love.load()
             end
         end
 
-        fp = pfp[love.math.random(1, #pfp)] --fp used for foodPosition
+        fp = pfp[love.math.random(1, #pfp)] --fp used for food Position
     end
 
     function reset()
@@ -51,8 +51,8 @@ function love.update(dt)
                 table.remove(dq, 1)
             end
 
-            local nxp = ss[1].x --nxp used for nextXPosition
-            local nyp = ss[1].y --nyp used for nextYPosition
+            local nxp = ss[1].x --nxp used for next X Position
+            local nyp = ss[1].y --nyp used for next Y Position
 
             if dq[1] == 'right' then
                 nxp = nxp + 1
