@@ -1,104 +1,99 @@
 function love.load()
+    gX = 40            -- gX used for gridXcount
+    gY = 27    -- gY used for gridYcount 
 
-    gridXCount = 40
-    gridYCount = 27
+    function mf()    -- mf used for moveFood
+        local pfp = {}      --pfp used for possibleFoodPositions pfb pbf
 
-    function moveFood()     --moving food
-        local possibleFoodPositions = {}
-
-        for foodX = 1, gridXCount do
-            for foodY = 1, gridYCount do
+        for fx = 1, gX do     --fx used for foodX
+            for fy = 1, gY do --fy used for foodY
                 local possible = true
 
-                for segmentIndex, segment in ipairs(snakeSegments) do
-                    if foodX == segment.x and foodY == segment.y then
+                for si, seg in ipairs(ss) do --si used for segmentIndex, seg used for segment, ss used for snakeSegments
+                    if fx == seg.x and fy == seg.y then
                         possible = false
                     end
                 end
 
                 if possible then
-                    table.insert(possibleFoodPositions, {x = foodX, y = foodY})
+                    table.insert(pfp, {x = fx, y = fy})
                 end
             end
         end
 
-        foodPosition = possibleFoodPositions[love.math.random(1, #possibleFoodPositions)]
+        fp = pfp[love.math.random(1, #pfp)] --fp used for foodPosition
     end
-    
-    --Drawing the snake & Moving the snake right
 
     function reset()
-        snakeSegments = {
+        ss = {
             {x = 3, y = 1},
             {x = 2, y = 1},
             {x = 1, y = 1},
         }
-        directionQueue = {'right'}
+        dq = {'right'}  --dq used for direction queue
         snakeAlive = true
         timer = 0
-        moveFood()
+        mf()
     end
 
     reset()
 end
-   
---Timmer
 
 function love.update(dt)
     timer = timer + dt
 
     if snakeAlive then
-        local timerLimit = 0.15                 --The snake moves once every 0.15 seconds.
+        local timerLimit = 0.25
         if timer >= timerLimit then
             timer = timer - timerLimit
 
-            if #directionQueue > 1 then
-                table.remove(directionQueue, 1)
+            if #dq > 1 then
+                table.remove(dq, 1)
             end
 
-            local nextXPosition = snakeSegments[1].x
-            local nextYPosition = snakeSegments[1].y
+            local nxp = ss[1].x --nxp used for nextXPosition
+            local nyp = ss[1].y --nyp used for nextYPosition
 
-            if directionQueue[1] == 'right' then      --Wrapping around screen
-                nextXPosition = nextXPosition + 1
-                if nextXPosition > gridXCount then
-                    nextXPosition = 1
+            if dq[1] == 'right' then
+                nxp = nxp + 1
+                if nxp > gX then
+                    nxp = 1
                 end
-            elseif directionQueue[1] == 'left' then
-                nextXPosition = nextXPosition - 1
-                if nextXPosition < 1 then
-                    nextXPosition = gridXCount
+            elseif dq[1] == 'left' then
+                nxp = nxp - 1
+                if nxp < 1 then
+                    nxp = gX
                 end
-            elseif directionQueue[1] == 'down' then
-                nextYPosition = nextYPosition + 1
-                if nextYPosition > gridYCount then
-                    nextYPosition = 1
+            elseif dq[1] == 'down' then
+                nyp = nyp + 1
+                if nyp > gY then
+                    nyp = 1
                 end
-            elseif directionQueue[1] == 'up' then
-                nextYPosition = nextYPosition - 1
-                if nextYPosition < 1 then
-                    nextYPosition = gridYCount
+            elseif dq[1] == 'up' then
+                nyp = nyp - 1
+                if nyp < 1 then
+                    nyp = gY
                 end
             end
 
             local canMove = true
 
-            for segmentIndex, segment in ipairs(snakeSegments) do
-                if segmentIndex ~= #snakeSegments
-                and nextXPosition == segment.x 
-                and nextYPosition == segment.y then
+            for si, seg in ipairs(ss) do
+                if si ~= #ss
+                and nxp == seg.x 
+                and nyp == seg.y then
                     canMove = false
                 end
             end
 
             if canMove then
-                table.insert(snakeSegments, 1, {x = nextXPosition, y = nextYPosition})
+                table.insert(ss, 1, {x = nxp, y = nyp})
 
-                if snakeSegments[1].x == foodPosition.x
-                and snakeSegments[1].y == foodPosition.y then
-                    moveFood()
+                if ss[1].x == fp.x
+                and ss[1].y == fp.y then
+                    mf()
                 else
-                    table.remove(snakeSegments)
+                    table.remove(ss)
                 end
             else
                 snakeAlive = false
@@ -117,8 +112,8 @@ function love.draw()
         'fill',
         0,
         0,
-        gridXCount * cellSize,
-        gridYCount * cellSize
+        gX * cellSize,
+        gY * cellSize
     )
 
     local function drawCell(x, y)
@@ -131,38 +126,38 @@ function love.draw()
         )
     end
 
-    for segmentIndex, segment in ipairs(snakeSegments) do
+    for si, seg in ipairs(ss) do
         if snakeAlive then
             love.graphics.setColor(1, 1, 0)
         else
             love.graphics.setColor(1, 1, 1)
         end
-        drawCell(segment.x, segment.y)
+        drawCell(seg.x, seg.y)
     end
 
     love.graphics.setColor(1, 0, 1)
-    drawCell(foodPosition.x, foodPosition.y)
+    drawCell(fp.x, fp.y)
 end
 
-function love.keypressed(key)                 --Preventing moving straight backwards
+function love.keypressed(key)
     if key == 'right'
-    and directionQueue[#directionQueue] ~= 'right'
-    and directionQueue[#directionQueue] ~= 'left' then
-        table.insert(directionQueue, 'right')
+    and dq[#dq] ~= 'right'
+    and dq[#dq] ~= 'left' then
+        table.insert(dq, 'right')
 
     elseif key == 'left'
-    and directionQueue[#directionQueue] ~= 'left'
-    and directionQueue[#directionQueue] ~= 'right' then
-        table.insert(directionQueue, 'left')
+    and dq[#dq] ~= 'left'
+    and dq[#dq] ~= 'right' then
+        table.insert(dq, 'left')
 
     elseif key == 'up'
-    and directionQueue[#directionQueue] ~= 'up'
-    and directionQueue[#directionQueue] ~= 'down' then
-        table.insert(directionQueue, 'up')
+    and dq[#dq] ~= 'up'
+    and dq[#dq] ~= 'down' then
+        table.insert(dq, 'up')
 
     elseif key == 'down'
-    and directionQueue[#directionQueue] ~= 'down'
-    and directionQueue[#directionQueue] ~= 'up' then
-        table.insert(directionQueue, 'down')
+    and dq[#dq] ~= 'down'
+    and dq[#dq] ~= 'up' then
+        table.insert(dq, 'down')
     end
 end
